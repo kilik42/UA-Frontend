@@ -32,6 +32,10 @@ import RolesDisplay from './RolesDisplay';
 import ResourcesDisplay from './ResourcesDisplay';
 import TimelineRoles from './TimelineRoles';
 import {styles} from '../../assets/styles/variables';
+import { viewProject } from './actions';
+import AddCommunications from "../AddCommunications";
+import AddExecution from "../AddExecution";
+import HealthSafety from "../HealthSafety";
 
 export class ProjectView extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
@@ -45,10 +49,11 @@ export class ProjectView extends React.Component { // eslint-disable-line react/
   componentDidMount() {
     PanelsRun();
     TableExtendedRun();
+    this.props.viewProjects(this.props.match.params.id);
   }
 
   handleSelect(key) {
-    console.log('Tab selected ' + key);
+    // console.log('Tab selected ' + key);
     this.setState({
       key
     });
@@ -80,6 +85,16 @@ export class ProjectView extends React.Component { // eslint-disable-line react/
             </div>
           ) 
         });
+    }
+  }
+
+  functionDisplay = () => {
+    if(this.props.projectview && this.props.projectview.projectDetail && this.props.projectview.projectDetail.place) {
+   
+      return (
+        <LocationDisplay location={this.props.projectview.projectDetail.place} />
+        
+      )
     }
   }
 
@@ -160,11 +175,9 @@ export class ProjectView extends React.Component { // eslint-disable-line react/
     }
   }
 
-  renderProjectGoals = () => {
-    if (this.props.projectview.projectView && this.props.projectview.projectView.goals.length > 0) {
-      return this.props.projectview.projectView.goals.map((goal, index) => {
-        return <li key={Math.random()} > {goal} </li>
-      });
+  renderProjectDetails = () => {
+    if (this.props.projectview.projectDetail) {
+          return <ProjectDetails projectId={this.props.match.params.id} projectDetail = {this.props.projectview.projectDetail} />      
     }
   }
 
@@ -180,14 +193,15 @@ export class ProjectView extends React.Component { // eslint-disable-line react/
             <small>
               Project Details
             </small>
+            
         </h3>
         
         <Row>
-          <ProjectDetails renderProjectGoals={this.renderProjectGoals} {...this.props} />
+          {this.renderProjectDetails()}
           
           <Col md={6}>
            <Row>
-              <LocationDisplay {...this.props}/>
+              {this.functionDisplay()}
               <ProjectTime {...this.props} />
            </Row>
            
@@ -195,6 +209,36 @@ export class ProjectView extends React.Component { // eslint-disable-line react/
           
           </Col>
 
+        </Row>
+
+        <Row>
+          <hr />
+          <Col md={12}>
+            <AddCommunications
+              projectId={this.props.match.params.id}
+            />
+
+          </Col>
+
+
+          <Col md={12}>
+            <HealthSafety
+
+              projectId={this.props.match.params.id}
+            
+            />
+
+
+          </Col>
+          <Col md={6}>
+            <AddExecution
+
+              projectId={this.props.match.params.id}
+
+            />
+
+
+          </Col>
         </Row>
 
         <Row>
@@ -220,6 +264,8 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
+    viewProjects : (id) => dispatch(viewProject(id)),
+    listCommunication : (id) => dispatch(listCommunication(id))
   };
 }
 

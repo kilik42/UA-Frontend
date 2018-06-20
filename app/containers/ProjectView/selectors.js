@@ -19,7 +19,21 @@ const makeSelectProjectView = () => createSelector(
   (substate) => substate.toJS()
 );
 
+const projectId = () => createSelector(
+  selectProjectViewDomain,
+  (substate) => substate.get('id')
+)
+
+const listCommunications = () => createSelector(
+  selectProjectViewDomain,
+  (substate) => substate.get('communication_list')
+)
+
+
+
 export default makeSelectProjectView;
 export {
   selectProjectViewDomain,
+  projectId,
+  listCommunications
 };
